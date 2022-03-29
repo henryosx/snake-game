@@ -4,6 +4,7 @@ from datetime import datetime, timedelta
 
 pygame.init() # 2. pygame 초기화
 
+# 3. pygame에 사용되는 전역변수 선언
 # 사각형의 사이즈를 정하자.
 SCREEN_MAX = 600
 BLOCK_SIZE = 20
@@ -12,16 +13,18 @@ size = [SCREEN_MAX, SCREEN_MAX]
 X_MAX = int(SCREEN_MAX / BLOCK_SIZE)
 Y_MAX = int(SCREEN_MAX / BLOCK_SIZE)
 
-# 3. pygame에 사용되는 전역변수 선언
 WHITE = (255,255,255)
 RED = (255,0,0)
 GREEN = (0,255,0)
+BLUE = (0,0,255)
 pygame.display.set_caption("Snake Game!")
 screen = pygame.display.set_mode(size)
 
 done= False
 clock= pygame.time.Clock()
 last_moved_time = datetime.now()
+score = 0
+font = pygame.font.SysFont("arial", 30, True, True)
 
 # 방향키 값을 딕션너리로 설정하여 나중에 비교하는데 사용한다.
 KEY_DIRECTION = {
@@ -88,7 +91,7 @@ class Apple:
 
 # 4. pygame 무한루프
 def runGame():
-    global done, last_moved_time
+    global done, last_moved_time, score
     #게임 시작 시, 뱀과 사과를 초기화
     snake = Snake()
     apple = Apple()
@@ -97,6 +100,9 @@ def runGame():
         # 화면을 흰색으로 지운다.
         clock.tick(60)
         screen.fill(WHITE)
+        # display the score.
+        text = font.render(f"score = {score}", True, BLUE) 
+        screen.blit(text, (20, 0))
 
         # 방향값을 받아서 이동방향을 결정한다.
         for event in pygame.event.get():
@@ -113,6 +119,7 @@ def runGame():
 
         # 뱀이 사과를 먹으면 뱀의 길이가 늘어나도록 한다.
         if snake.positions[0] == apple.position:
+            score += 1
             snake.grow()
             apple.position = (random.randint(0, X_MAX - 1), random.randint(0, Y_MAX - 1))
 
