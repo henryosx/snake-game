@@ -93,6 +93,9 @@ class Apple:
     def draw(self):
         draw_block(screen, RED, self.position)
 
+    def move(self):
+        self.position = (random.randint(0, X_POS_MAX - 1), random.randint(0, Y_POS_MAX - 1))
+
 def runGame():
     global done, last_moved_time, score
     snake = Snake()
@@ -112,14 +115,16 @@ def runGame():
                 if event.key in KEY_DIRECTION:
                     snake.direction = KEY_DIRECTION[event.key]
 
+        # move the snake.
         if timedelta(seconds=0.1) <= datetime.now() - last_moved_time:
             snake.move()
             last_moved_time = datetime.now()
 
+        # check if the snake eats a apple.
         if snake.positions[0] == apple.position:
             score += 1
             snake.grow()
-            apple.position = (random.randint(0, X_POS_MAX - 1), random.randint(0, Y_POS_MAX - 1))
+            apple.move() 
 
         # check a collision
         if snake.collision():
