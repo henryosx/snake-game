@@ -1,32 +1,32 @@
-import pygame # 1. pygame 선언
-import random
+# import modules
+import pygame
+import random 
 from datetime import datetime, timedelta
 
-pygame.init() # 2. pygame 초기화
+pygame.init() # initialize pygame
 
-# 3. pygame에 사용되는 전역변수 선언
-# 사각형의 사이즈를 정하자.
-SCREEN_MAX = 600
+# declaration for pygame
+SCREEN_SIZE_MAX = 600
 BLOCK_SIZE = 20
-size = [SCREEN_MAX, SCREEN_MAX]
-size = [SCREEN_MAX, SCREEN_MAX]
-X_MAX = int(SCREEN_MAX / BLOCK_SIZE)
-Y_MAX = int(SCREEN_MAX / BLOCK_SIZE)
+X_POS_MAX = int(SCREEN_SIZE_MAX / BLOCK_SIZE)
+Y_POS_MAX = int(SCREEN_SIZE_MAX / BLOCK_SIZE)
 
 WHITE = (255,255,255)
 RED = (255,0,0)
 GREEN = (0,255,0)
 BLUE = (0,0,255)
+BLACK = (0, 0, 0)
+
 pygame.display.set_caption("Snake Game!")
-screen = pygame.display.set_mode(size)
+screen = pygame.display.set_mode((SCREEN_SIZE_MAX, SCREEN_SIZE_MAX))
 
 done= False
+score = 0
 clock= pygame.time.Clock()
 last_moved_time = datetime.now()
-score = 0
-font = pygame.font.SysFont("arial", 30, True, True)
+font = pygame.font.SysFont("arial", 20, True, True)
 
-# 방향키 값을 딕션너리로 설정하여 나중에 비교하는데 사용한다.
+# define a dictionary for directions.
 KEY_DIRECTION = {
     pygame.K_UP: 'N',
     pygame.K_DOWN: 'S',
@@ -34,6 +34,7 @@ KEY_DIRECTION = {
     pygame.K_RIGHT: 'E',
 }
 
+# define to draw a block.
 def draw_block(screen, color, position):
     block = pygame.Rect((position[0] * BLOCK_SIZE, position[1] * BLOCK_SIZE), (BLOCK_SIZE, BLOCK_SIZE))
     pygame.draw.rect(screen, color, block)
@@ -46,7 +47,9 @@ class Snake:
 
     def draw(self):
         # for문을 이용해서 뱀의 위치를 그린다.
-        for position in self.positions:
+        draw_block(screen, RED, self.positions[0])
+        draw_block(screen, BLACK, self.positions[-1])
+        for position in self.positions[1:-1]:
             draw_block(screen, GREEN, position)
 
     def move(self):
@@ -80,7 +83,6 @@ class Snake:
         elif self.direction == 'E':
             # 동쪽방향으로 이동하고 있기 때문에 꼬리의 서쪽방향으로 하나를 추가한다.
             self.positions.append((x - 1, y))
-
 
 class Apple:
     def __init__(self, position=(5, 5)):
@@ -121,7 +123,7 @@ def runGame():
         if snake.positions[0] == apple.position:
             score += 1
             snake.grow()
-            apple.position = (random.randint(0, X_MAX - 1), random.randint(0, Y_MAX - 1))
+            apple.position = (random.randint(0, X_POS_MAX - 1), random.randint(0, Y_POS_MAX - 1))
 
         # 뱀이 자신의 위치과 겹치면 종료한다.
         if snake.positions[0] in snake.positions[1:]:
@@ -129,7 +131,7 @@ def runGame():
 
         # 뱀이 경계를 넘어가면 종료한다.
         x,y = snake.positions[0]
-        if x in range(0, X_MAX) and y in range(0, Y_MAX) and done != True:
+        if x in range(0, X_POS_MAX) and y in range(0, Y_POS_MAX) and done != True:
             done = False
         else:
             done = True
