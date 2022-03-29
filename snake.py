@@ -74,6 +74,18 @@ class Snake:
         elif self.direction == 'E':
             self.positions.append((x - 1, y))
 
+    def collision(self):
+        # self collision.
+        if self.positions[0] in self.positions[1:]:
+            return True
+        else:
+            # check out of the boundary.
+            x, y = self.positions[0]
+            if x in range(0, X_POS_MAX) and y in range(0, Y_POS_MAX):
+                return False
+            else:
+                return True
+
 class Apple:
     def __init__(self, position=(5, 5)):
         self.position = position
@@ -109,14 +121,11 @@ def runGame():
             snake.grow()
             apple.position = (random.randint(0, X_POS_MAX - 1), random.randint(0, Y_POS_MAX - 1))
 
-        if snake.positions[0] in snake.positions[1:]:
+        # check a collision
+        if snake.collision():
             done = True
-
-        x,y = snake.positions[0]
-        if x in range(0, X_POS_MAX) and y in range(0, Y_POS_MAX) and done != True:
-            done = False
         else:
-            done = True
+            done = False
 
         snake.draw()
         apple.draw()
