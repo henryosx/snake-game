@@ -46,16 +46,26 @@ def draw_line(screen, color, start_position, end_position):
     width = 1
     pygame.draw.line(screen, color, start_pos, end_pos, width)
 
+# define to draw a circle
+def draw_circle(screen, color, position):
+    radius = int(BLOCK_SIZE / 2)
+    x = position[0] * BLOCK_SIZE + radius
+    y = position[1] * BLOCK_SIZE + radius
+    pygame.draw.circle(screen, color, [x, y], radius)
+
 class Snake:
     def __init__(self):
+        #self.positions = [(2,0),(1,0),(0,0)]
         self.positions = [(3,1),(2,1),(1,1)]
         self.direction = ''
 
     def draw(self):
         draw_block(screen, RED, self.positions[0])
         for position in self.positions[1:-1]:
-            draw_block(screen, GREEN, position)
-        draw_block(screen, BLACK, self.positions[-1])
+            #draw_block(screen, GREEN, position)
+            draw_circle(screen, GREEN, position)
+        #draw_block(screen, BLACK, self.positions[-1])
+        draw_circle(screen, BLACK, self.positions[-1])
 
     def move(self):
         head_position = self.positions[0]
@@ -98,7 +108,8 @@ class Apple:
         self.position = position
 
     def draw(self):
-        draw_block(screen, RED, self.position)
+        #draw_block(screen, RED, self.position)
+        draw_circle(screen, RED, self.position)
 
     def move(self):
         #self.position = (random.randint(0, X_POS_MAX - 1), random.randint(0, Y_POS_MAX - 1))
