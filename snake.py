@@ -53,6 +53,44 @@ def draw_circle(screen, color, position):
     y = position[1] * BLOCK_SIZE + radius
     pygame.draw.circle(screen, color, [x, y], radius)
 
+# define to draw a triangle
+def draw_triangle(screen, color, position):
+    pos = [position[0] * BLOCK_SIZE, position[1] * BLOCK_SIZE]
+    half = int(BLOCK_SIZE/2)
+    width = 0 # zero is filled with color
+    x = [pos[0] + half, pos[1]]
+    y = [pos[0], pos[1] + BLOCK_SIZE]
+    z = [pos[0] + BLOCK_SIZE, pos[1] + BLOCK_SIZE]
+    pygame.draw.polygon(screen, color, [x, y, z], width)
+
+def draw_triangle_direction(screen, color, position, direction):
+    pos = [position[0] * BLOCK_SIZE, position[1] * BLOCK_SIZE]
+    half = int(BLOCK_SIZE/2)
+    width = 0 # zero is filled with color
+
+    if direction == 'N':
+        x = [pos[0], pos[1]]
+        y = [pos[0] + BLOCK_SIZE, pos[1]]
+        z = [pos[0] + half, pos[1] + BLOCK_SIZE]
+    elif direction == 'S':
+        x = [pos[0] + half, pos[1]]
+        y = [pos[0], pos[1] + BLOCK_SIZE]
+        z = [pos[0] + BLOCK_SIZE, pos[1] + BLOCK_SIZE]
+    elif direction == 'W':
+        x = [pos[0], pos[1]]
+        y = [pos[0], pos[1] + BLOCK_SIZE]
+        z = [pos[0] + BLOCK_SIZE, pos[1] + half]
+    elif direction == 'E':
+        x = [pos[0] + BLOCK_SIZE, pos[1]]
+        y = [pos[0] + BLOCK_SIZE, pos[1] + BLOCK_SIZE]
+        z = [pos[0], pos[1] + half]
+    else:
+        x = [pos[0] + BLOCK_SIZE, pos[1]]
+        y = [pos[0] + BLOCK_SIZE, pos[1] + BLOCK_SIZE]
+        z = [pos[0], pos[1] + half]
+    
+    pygame.draw.polygon(screen, color, [x, y, z], width)
+
 class Snake:
     def __init__(self):
         #self.positions = [(2,0),(1,0),(0,0)]
@@ -62,18 +100,28 @@ class Snake:
     def draw(self):
         draw_block(screen, RED, self.positions[0])
         for position in self.positions[1:-1]:
-            #draw_block(screen, GREEN, position)
-            draw_circle(screen, GREEN, position)
-        #draw_block(screen, BLACK, self.positions[-1])
-        draw_circle(screen, BLACK, self.positions[-1])
+            draw_block(screen, GREEN, position)
+        diff = [self.positions[-1][0] - self.positions[-2][0], self.positions[-1][1] - self.positions[-2][1]]
+        if diff == [0, -1]:
+            direction = 'S'
+        elif diff == [0, 1]:
+            direction = 'N'
+        elif diff == [1, 0]:
+            direction = 'W'
+        elif diff == [-1, 0]:
+            direction = 'E'
+        else:
+            pass
+        draw_triangle_direction(screen, BLACK, self.positions[-1], direction)
 
     def move(self):
         head_position = self.positions[0]
         x, y = head_position
-        if self.direction == 'N':
-            self.positions = [(x , y - 1)] + self.positions[:-1]
-        elif self.direction == 'S':
+
+        if self.direction == 'S':
             self.positions = [(x , y + 1)] + self.positions[:-1]
+        elif self.direction == 'N':
+            self.positions = [(x , y - 1)] + self.positions[:-1]
         elif self.direction == 'W':
             self.positions = [(x - 1, y)] + self.positions[:-1]
         elif self.direction == 'E':
@@ -82,13 +130,26 @@ class Snake:
     def grow(self):
         tail_position = self.positions[-1]
         x, y = tail_position
-        if self.direction == 'N':
+
+        diff = [self.positions[-1][0] - self.positions[-2][0], self.positions[-1][1] - self.positions[-2][1]]
+        if diff == [0, -1]:
+            direction = 'S'
+        elif diff == [0, 1]:
+            direction = 'N'
+        elif diff == [1, 0]:
+            direction = 'W'
+        elif diff == [-1, 0]:
+            direction = 'E'
+        else:
+            pass
+
+        if direction == 'N':
             self.positions.append((x, y + 1))
-        elif self.direction == 'S':
+        elif direction == 'S':
             self.positions.append((x, y - 1))
-        elif self.direction == 'W':
+        elif direction == 'W':
             self.positions.append((x + 1, y))
-        elif self.direction == 'E':
+        elif direction == 'E':
             self.positions.append((x - 1, y))
 
     def collision(self):
@@ -124,6 +185,7 @@ def runGame():
         clock.tick(60)
         # clear screen with white
         screen.fill(WHITE)
+
         # draw box with red line
         draw_line(screen, RED, [1, 1], [X_POS_MAX - 1, 1])
         draw_line(screen, RED, [1, 1], [1, Y_POS_MAX - 1])
