@@ -88,7 +88,7 @@ def draw_triangle_direction(screen, color, position, direction):
         x = [pos[0] + BLOCK_SIZE, pos[1]]
         y = [pos[0] + BLOCK_SIZE, pos[1] + BLOCK_SIZE]
         z = [pos[0], pos[1] + half]
-    
+
     pygame.draw.polygon(screen, color, [x, y, z], width)
 
 class Snake:
@@ -98,7 +98,7 @@ class Snake:
         self.direction = ''
 
     def draw(self):
-        draw_block(screen, RED, self.positions[0])
+        # draw the body
         for position in self.positions[1:-1]:
             draw_block(screen, GREEN, position)
         diff = [self.positions[-1][0] - self.positions[-2][0], self.positions[-1][1] - self.positions[-2][1]]
@@ -112,7 +112,11 @@ class Snake:
             direction = 'E'
         else:
             pass
+        # draw the tail
         draw_triangle_direction(screen, BLACK, self.positions[-1], direction)
+
+        # draw the head
+        draw_block(screen, RED, self.positions[0])
 
     def move(self):
         head_position = self.positions[0]
@@ -169,11 +173,9 @@ class Apple:
         self.position = position
 
     def draw(self):
-        #draw_block(screen, RED, self.position)
         draw_circle(screen, RED, self.position)
 
     def move(self):
-        #self.position = (random.randint(0, X_POS_MAX - 1), random.randint(0, Y_POS_MAX - 1))
         self.position = (random.randint(1, X_POS_MAX - 2), random.randint(1, Y_POS_MAX - 2))
 
 def runGame():
@@ -191,9 +193,10 @@ def runGame():
         draw_line(screen, RED, [1, 1], [1, Y_POS_MAX - 1])
         draw_line(screen, RED, [X_POS_MAX - 1, 1], [X_POS_MAX - 1, Y_POS_MAX - 1])
         draw_line(screen, RED, [1, Y_POS_MAX - 1], [X_POS_MAX - 1, Y_POS_MAX - 1])
+
         # display the score.
         text = font.render(f"score = {score}", True, BLUE)
-        screen.blit(text, (20, 0))
+        screen.blit(text, (BLOCK_SIZE, 0))
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
