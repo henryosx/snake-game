@@ -8,6 +8,9 @@ pygame.init() # initialize pygame
 # declaration for pygame
 SCREEN_SIZE_MAX = 600
 BLOCK_SIZE = 20
+
+assert SCREEN_SIZE_MAX % BLOCK_SIZE == 0, 'Screen size is a mutiplier of block size'
+
 X_POS_MAX = int(SCREEN_SIZE_MAX / BLOCK_SIZE)
 Y_POS_MAX = int(SCREEN_SIZE_MAX / BLOCK_SIZE)
 
@@ -101,6 +104,8 @@ class Snake:
         # draw the body
         for position in self.positions[1:-1]:
             draw_block(screen, GREEN, position)
+
+        # draw the tail
         diff = [self.positions[-1][0] - self.positions[-2][0], self.positions[-1][1] - self.positions[-2][1]]
         if diff == [0, -1]:
             direction = 'S'
@@ -111,12 +116,22 @@ class Snake:
         elif diff == [-1, 0]:
             direction = 'E'
         else:
-            pass
-        # draw the tail
+            direction = 'E'
         draw_triangle_direction(screen, BLACK, self.positions[-1], direction)
 
         # draw the head
         draw_block(screen, RED, self.positions[0])
+        if self.direction == 'N':
+            direction = 'S'
+        elif self.direction == 'S':
+            direction = 'N'
+        elif self.direction == 'E':
+            direction = 'W'
+        elif self.direction == 'W':
+            direction = 'E'
+        else:
+            direction = 'W'
+        draw_triangle_direction(screen, BLUE, self.positions[0], direction)
 
     def move(self):
         head_position = self.positions[0]
