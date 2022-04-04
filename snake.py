@@ -183,6 +183,20 @@ class Snake:
             else:
                 return True
 
+def opposite_direction(direction):
+    opposite = ''
+
+    if direction == 'N':
+        opposite = 'S'
+    elif direction == 'S':
+        opposite = 'N'
+    elif direction == 'W':
+        opposite = 'E'
+    elif direction == 'E':
+        opposite = 'W'
+
+    return opposite
+
 class Apple:
     def __init__(self, position=(5, 5)):
         self.position = position
@@ -218,7 +232,9 @@ def runGame():
                 done=True
             if event.type == pygame.KEYDOWN:
                 if event.key in KEY_DIRECTION:
-                    snake.direction = KEY_DIRECTION[event.key]
+                    # snake doesn't move on the opposide of the going.
+                    if snake.direction != opposite_direction(KEY_DIRECTION[event.key]):
+                        snake.direction = KEY_DIRECTION[event.key]
 
         # move the snake.
         if timedelta(seconds=0.1) <= datetime.now() - last_moved_time:
