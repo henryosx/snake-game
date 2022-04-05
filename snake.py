@@ -15,10 +15,12 @@ X_POS_MAX = int(SCREEN_SIZE_MAX / BLOCK_SIZE)
 Y_POS_MAX = int(SCREEN_SIZE_MAX / BLOCK_SIZE)
 
 WHITE   = (255,255,255)
+GRAY    = (128,128,128)
 RED     = (255,  0,  0)
 GREEN   = (  0,255,  0)
 BLUE    = (  0,  0,255)
 BLACK   = (  0,  0,  0)
+YELLOW  = (255,255,  0)
 
 pygame.display.set_caption("Snake Game!")
 screen = pygame.display.set_mode((SCREEN_SIZE_MAX, SCREEN_SIZE_MAX))
@@ -102,8 +104,13 @@ class Snake:
 
     def draw(self):
         # draw the body
+        index = 0
         for position in self.positions[1:-1]:
-            draw_block(screen, GREEN, position)
+            if index % 2 == 0:
+                draw_block(screen, GREEN, position)
+            else:
+                draw_block(screen, YELLOW, position)
+            index += 1
 
         # draw the tail
         diff = [self.positions[-1][0] - self.positions[-2][0], self.positions[-1][1] - self.positions[-2][1]]
@@ -215,7 +222,8 @@ def runGame():
     while not done:
         clock.tick(60)
         # clear screen with white
-        screen.fill(WHITE)
+        #screen.fill(WHITE)
+        screen.fill(GRAY)
 
         # draw box with red line
         draw_line(screen, RED, [1, 1], [X_POS_MAX - 1, 1])
